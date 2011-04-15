@@ -13,10 +13,12 @@ depends on mailman configuration.
 
 ==== INSTALLATION ===
 
-bin/install.sh should have installed the required PEAR packages.
+bin/installFF.sh should do whatever is necessary for the plugin works
+* creation of directory with good rights
+* installation of pear packages
+* config mailman
 
-
-==== Importing existing list archives ====
+==== Importing existing list archives in Codendi ====
 
 ## To import ML archives of specific projects, into ForumML DB, 
 run 'mail_2_DB.php' script.
@@ -27,5 +29,18 @@ $> /usr/share/codendi/src/utils/php-launcher /usr/share/codendi/plugins/forumml/
 ## To import ML archives of all Codendi projects, for which the plugin is enabled
 run 'ml_arch_2_DB.pl' script:
 $> /usr/share/codendi/plugins/forumml/bin/ml_arch_2_DB.pl
+
+
+==== Importing existing list archives in iFusionForge ====
+
+## To import ML archives of specific projects, into ForumML DB, 
+run 'mail_2_DBFF.php' script.
+1st argument: list name
+2nd argument: 2
+$> /usr/bin/php -q -d include_path=.:/etc/gforge:/usr/share/gforge:/usr/share/gforge/www/include:/usr/share/gforge/plugins forumml/bin/mail_2_DBFF.php mylistname 2
+
+## To import ML archives of all projects, for which the plugin is enabled
+run 'ml_arch_2_DBFF.pl' script:
+$> forumml/bin/ml_arch_2_DBFF.pl
 
 

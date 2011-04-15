@@ -27,8 +27,8 @@ class ForumML_AttachmentDao extends DataAccessObject {
     }
     
     function getById($id) {
-        $sql = 'SELECT * FROM plugin_forumml_attachment WHERE id_attachment = '.$this->da->quoteSmart($id);
-        return $this->retrieve($sql);
+        $sql = 'SELECT * FROM plugin_forumml_attachment WHERE id_attachment = $1';
+        return $this->retrieve($sql,array($id));
     }
 
 }

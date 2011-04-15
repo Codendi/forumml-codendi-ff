@@ -24,8 +24,8 @@
  */
 
 header("content-type: application/x-javascript");
+require_once('env.inc.php');
 require_once('pre.php');
-
 ?>
 
 function addHeader(cc,file,header_type)
@@ -39,21 +39,21 @@ function addHeader(cc,file,header_type)
 
   newdiv.setAttribute("id",divIdName);
   if (header_type == 1) {
-  	newdiv.innerHTML += "<table><tr><td width='65' align='right'><b><i><?php echo $GLOBALS["Language"]->getText('plugin_forumml','cc') ?> </i></b></td><td align=center width=350><input name='ccs["
+  	newdiv.innerHTML += "<table><tr><td width='65' align='right'><b><i><?php echo _('CC :') ?> </i></b></td><td align=center width=350><input name='ccs["
   					+num
   					+"]' type='text' value='"
   					+cc
   					+"'size=41></td><td align=center><a href=\"javascript:;\" onclick=\"removeHeader(\'"
   					+divIdName
-  					+"\')\"><img border='0' src=\"<?php echo util_get_image_theme("ic/trash.png")?>\"></a></td></tr></table>";
+  					+"\')\"><img border='0' src=\"<?php echo getImage("ic/trash.png"); ?>\"></a></td></tr></table>";
   } else {
-  	newdiv.innerHTML += "<table><tr><td width='65' align='right'><b><i><?php echo $GLOBALS["Language"]->getText('plugin_forumml','attach') ?> </i></b></td><td align=center width=350><input name='files["
+  	newdiv.innerHTML += "<table><tr><td width='65' align='right'><b><i><?php echo _('Attach :') ?> </i></b></td><td align=center width=350><input name='files["
   					+num
   					+"]'' type='file' value='"
   					+file
   					+"'size=30></td><td align=center><a href=\"javascript:;\" onclick=\"removeHeader(\'"
   					+divIdName
-  					+"\')\"><img border='0' src=\"<?php echo util_get_image_theme("ic/trash.png")?>\"></a></td></tr></table>";  
+  					+"\')\"><img border='0' src=\"<?php echo getImage("ic/trash.png"); ?>\"></a></td></tr></table>";  
   }					
   ni.appendChild(newdiv);
 }

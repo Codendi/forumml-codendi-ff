@@ -30,6 +30,7 @@ Only projects that enabled ForumML plugin are concerned by this migration.
 =cut
 
 # Search if there are lists we shouldn't treat
+print "Script launched";
 my $conf = '/etc/codendi/plugins/forumml/etc/forumml.inc';
 my %excluded_list;
 if (-f $conf) {
@@ -64,9 +65,9 @@ use DBI;
 
 require "/usr/share/codendi/src/utils/include.pl";
 &db_connect;
-
+print "Connect to DB";
 # get all active mailing-lists
-my $query = "SELECT list_name, group_id FROM mail_group_list WHERE status = 1";
+my $query = "SELECT list_name, group_id FROM mail_group_list WHERE status = 3";
 my $req = $dbh->prepare($query);
 $req->execute();
 while (my ($list_name,$group_id) = $req->fetchrow()) {

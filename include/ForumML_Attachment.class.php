@@ -39,7 +39,7 @@ class ForumML_Attachment {
      * Try to get it from the db and if it fails, try with filename
      */
     function getType($row) {
-        if (preg_match('/^[ ]*(.*\/.*)[ ]*;?.*$/', $row['file_type'], $matches)) {
+        /*if (preg_match('/^[ ]*(.*\/.*)[ ]*;?.*$/', $row['file_type'], $matches)) {
             $type = $matches[1];
         } else {
             // Retrieve the uploaded file type
@@ -79,7 +79,8 @@ class ForumML_Attachment {
                 break;
             }
         }
-        return $type;
+        return $type;*/
+	return mime_content_type($row['file_path']);
     }
 
     function getDao() {

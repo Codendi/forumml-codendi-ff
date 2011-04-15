@@ -27,12 +27,13 @@
  * ForumML New Thread submission form
  * 
  */ 
- 
+require_once('env.inc.php'); 
 require_once('pre.php');
+require_once('preplugins.php');
 require_once('forumml_utils.php');
-require_once('www/mail/mail_utils.php');
-require_once('common/mail/Mail.class.php');
-require_once('common/plugin/PluginManager.class.php');
+require_once('mailman/www/mailman_utils.php');
+require_once('mailman/include/MailmanList.class.php');
+//require_once('common/plugin/PluginManager.class.php');
 require_once(dirname(__FILE__).'/../include/ForumML_FileStorage.class.php');
 require_once(dirname(__FILE__).'/../include/ForumML_HTMLPurifier.class.php');
 
@@ -50,14 +51,15 @@ if ($p && $plugin_manager->isPluginAvailable($p) && $p->isAllowed()) {
 	
 	// Checks 'list' parameter
 	if (! $request->valid(new Valid_UInt('list'))) {
-		exit_error($GLOBALS["Language"]->getText('global','error'),$GLOBALS["Language"]->getText('plugin_forumml','specify_list'));
+		exit_error(_('Error'),_('No list specified'));
 	} else {
 		$list_id = $request->get('list');
-		if (!user_isloggedin() || (!mail_is_list_public($list_id) && !user_ismember($group_id))) {
-			exit_error($GLOBALS["Language"]->getText('global','error'),$GLOBALS["Language"]->getText('include_exit','no_perm'));
-		}
-		if (!mail_is_list_active($list_id)) {
-			exit_error($GLOBALS["Language"]->getText('global','error'),$GLOBALS["Language"]->getText('plugin_forumml','wrong_list'));
+$list = new MailmanList($group_id,$list_id);
+		if (!isLogged() || ($list->isPublic()!=1 && !$current_user->isMember($group_id))) {
+			exit_error(_('error'),_('You are not allowed to access this page'));
+		}		
+		if ($list->getStatus() !=3) {
+			exit_error(_('Error'),_('The mailing  list does not exist or is inactive'));
 		}
 	}
 
@@ -67,27 +69,26 @@ if ($p && $plugin_manager->isPluginAvailable($p) && $p->isAllowed()) {
 		$vSub = new Valid_String('subject');
 		$vSub->required();
 		if (! $request->valid($vSub)) {		
-			$GLOBALS['Response']->addFeedback('error', $GLOBALS['Language']->getText('plugin_forumml','type_subject'));
+			$feedback .=_('Submit failed you must specify the mail subject.');
 		} else {
 			// process the mail
 			$return = plugin_forumml_process_mail($p);
 			if ($return) {
-				$GLOBALS['Response']->addFeedback('info', $GLOBALS['Language']->getText('plugin_forumml','email_delay'));
-				$GLOBALS['Response']->redirect('/plugins/forumml/message.php?'. http_build_query(array(
-				    'group_id' => $group_id,
-				    'list'     => $list_id,
+				$feedback .=_('There can be some delay before to see the message in the archives.')._(' Redirecting to archive page, please wait ...');
+				//htmlRedirect('/plugins/forumml/message.php?'. http_build_query(array(
+				//    'group_id' => $group_id,
+				//    'list'     => $list_id,
 				    //'topic'    => 0
-                )));
+             //   )));
 			}
 		}
 	}
-        $GLOBALS['Response']->addFeedback('info', $GLOBALS['Language']->getText('plugin_forumml','warn_permission'));
 
 	$params['title'] = 'ForumML';
 	$params['group'] = $group_id;
 	$params['toptab'] = 'mail';
 	$params['help'] = "CommunicationServices.html#MailingLists";
-	mail_header($params);
+	mailman_header($params);
 		
 	if ($request->isPost() && $request->get('post') && $request->valid($vSub)) {
 		if (isset($return) && $return) {
@@ -96,34 +97,34 @@ if ($p && $plugin_manager->isPluginAvailable($p) && $p->isAllowed()) {
 		}
 	}
 
-	$list_link = '<a href="/plugins/forumml/message.php?group_id='.$group_id.'&list='.$list_id.'">'.mail_get_listname_from_list_id($list_id).'</a>';
-	echo '<H2><b>'.$GLOBALS['Language']->getText('plugin_forumml','list_new_thread',array($list_link)).'</b></H2>
-	<a href="/plugins/forumml/message.php?group_id='.$group_id.'&list='.$list_id.'">['.$GLOBALS["Language"]->getText('plugin_forumml','browse_arch').']</a><br><br>
-	<H3><b>'.$GLOBALS['Language']->getText('plugin_forumml','new_thread').'</b></H3>';
+	$list_link = '<a href="/plugins/forumml/message.php?group_id='.$group_id.'&list='.$list_id.'">'.$list->getName().'</a>';
+	echo '<H2><b>'._('Mailing List ').$list_link._(' - New Thread').'</b></H2>
+	<a href="/plugins/forumml/message.php?group_id='.$group_id.'&list='.$list_id.'">['._('Browse Archives').']</a><br><br>
+	<H3><b>'._('Submit a new thread').'</b></H3>';
 
 	// New thread form
 	echo '<script type="text/javascript" src="scripts/cc_attach_js.php"></script>';
 	echo "<form name='form' method='post' enctype='multipart/form-data'>
 	<table>
     <tr>
-		<td valign='top' align='left'><b> ".$GLOBALS['Language']->getText('plugin_forumml','subject').":&nbsp;</b></td>
+		<td valign='top' align='left'><b> "._('Subject').":&nbsp;</b></td>
 		<td align='left'><input type=text name='subject' size='80'></td>
 	</tr></table>";
 	echo '<table>
     <tr>
 		<td align="left">
-			<p><a href="javascript:;" onclick="addHeader(\'\',\'\',1);">['.$GLOBALS["Language"]->getText('plugin_forumml','add_cc').']</a>
-			 - <a href="javascript:;" onclick="addHeader(\'\',\'\',2);">['.$GLOBALS["Language"]->getText('plugin_forumml','attach_file').']</a></p>
+			<p><a href="javascript:;" onclick="addHeader(\'\',\'\',1);">['.('Add cc').']</a>
+			- <a href="javascript:;" onclick="addHeader(\'\',\'\',2);">['._('Attach :').']</a></p>
 			<input type="hidden" value="0" id="header_val" />
 			<div id="mail_header"></div></td></tr></table>';
 	echo "<table><tr>
-			<td valign='top' align='left'><b>".$GLOBALS['Language']->getText('plugin_forumml','message')."&nbsp;</b></td>
+			<td valign='top' align='left'><b>"._('Message :')."&nbsp;</b></td>
 			<td align='left'><textarea rows='20' cols='100' name='message'></textarea></td>
 		</tr>
 		<tr>
 			<td></td>
-			<td><input type='submit' name='post' value='".$GLOBALS['Language']->getText('global','btn_submit')."'>
-				<input type='reset' value='".$GLOBALS['Language']->getText('plugin_forumml','erase')."'></td>
+			<td><input type='submit' name='post' value='"._('Submit')."'>
+				<input type='reset' value='"._('Erase')."'></td>
 		</tr>
 	</table></form>";
 
