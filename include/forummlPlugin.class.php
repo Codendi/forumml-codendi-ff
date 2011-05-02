@@ -50,82 +50,113 @@ class ForumMLPlugin extends Plugin {
 
 	function CallHook ($hookname, &$params) {
 		global $use_mailmanplugin,$G_SESSION,$HTML,$gfcommon,$gfwww,$gfplugins;
-		if ($hookname == "usermenu") {
-			$text = $this->text; // this is what shows in the tab
-			if ($G_SESSION->usesPlugin("mailman")) {
-				$param = '?type=user&id=' . $G_SESSION->getId() . "&pluginname=" . $this->name; // we indicate the part we�re calling is the user one
-				echo ' | ' . $HTML->PrintSubMenu (array ($text),
-						array ('/plugins/mailman/index.php' . $param ));				
-			}
-		} elseif ($hookname =='cssfile') {
-			echo '<link rel="stylesheet" type="text/css" href="/plugins/forumml/themes/default/css/style.css" />';
-		} elseif ($hookname == "groupisactivecheckbox") {
-			//Check if the group is active
-			// this code creates the checkbox in the project edit public info page to activate/deactivate the plugin
-			$group_id=$params['group'];
-			$group = &group_get_object($group_id);
-			echo "<tr>";
-			echo "<td>";
-			echo ' <input type="CHECKBOX" name="use_forummlplugin" value="1" ';
-			// CHECKED OR UNCHECKED?
-			if ( $group->usesPlugin ( $this->name ) ) {
-				echo "CHECKED";
-			}
-			echo "><br/>";
-			echo "</td>";
-			echo "<td>";
-			echo "<strong>Use ".$this->text." Plugin</strong>";
-			echo "</td>";
-			echo "</tr>";
-
-		} elseif ($hookname == "groupisactivecheckboxpost") {
-			// this code actually activates/deactivates the plugin after the form was submitted in the project edit public info page
-			$group_id=$params['group'];
-			$group = &group_get_object($group_id);
-			$use_mailmanplugin = getStringFromRequest('use_forummlplugin');
-			if ( $use_mailmanplugin == 1 ) {
-				$group->setPluginUse ( $this->name );
-			} else {
-				$group->setPluginUse ( $this->name, false );
-			}
-		} elseif ($hookname == 'search_engines') {
-			require_once('ForumMLSearchEngine.class.php');
-			// FIXME: when the hook is called, the group_id is not set.
-			// So I use the global variable instead.
-			$request =& HTTPRequest::instance();
-			$group_id = (int) $request->get('group_id');
-			if ($group_id) {
-				$group =& group_get_object($group_id);
-				if ($group->usesPlugin('forumml')) {
-					if (isset($params['object'])) {
-						$searchManager = $params['object'];
-					} else {
-						$searchManager = $params;
-					}
-					$searchManager->addSearchEngine(
-							SEARCH__TYPE_IS_LIST,
-							new ForumMLSearchEngine(SEARCH__TYPE_IS_LIST, 
-								'ForumMLHtmlSearchRenderer', 
-								_("This project's mailing lists"), $group_id)
-							);
-				}
-			}
-		}  elseif ($hookname == "browse_archives") {
-			$this->forumml_browse_archives($params);
-		} elseif ($hookname == "cssfile") {
+		switch ($hookname) {
+		case "usermenu":
+			$this->usermenu($params);
+			break;
+		case 'cssfile':
 			$this->cssFile($params);
-		} elseif ($hookname == "javascript_file") {
+			break;
+		case "groupisactivecheckbox":
+			$this->groupisactivecheckbox($params);
+			break;
+		case "groupisactivecheckboxpost":
+			$this->groupisactivecheckboxpost($params);
+			break;
+		case 'search_engines':
+			$this->search_engines($params);
+			break;
+		case "browse_archives":
+			$this->forumml_browse_archives($params);
+			break;
+		case "cssfile":
+			$this->cssFile($params);
+			break;
+		case "javascript_file":
 			$this->jsFile($params);
-		} elseif ($hookname == "search_type") {
+			break;
+		case "search_type":
 			$this->search_type($params);
-		} elseif ($hookname == "layout_searchbox_options") {
+			break;
+		case "layout_searchbox_options":
 			$this->forumml_searchbox_option($params);
-		} elseif ($hookname == "layout_searchbox_hiddenInputs") {
+			break;
+		case "layout_searchbox_hiddenInputs":
 			$this->forumml_searchbox_hiddenInput($params);
-		} elseif ($hookname == "plugins_powered_search") {
+			break;
+		case "plugins_powered_search"!
 			$this->forumml_search($params);
-
+			break;
 		}											
+	}
+
+	function usermenu($params) {
+		global $use_mailmanplugin,$G_SESSION,$HTML,$gfcommon,$gfwww,$gfplugins;
+		$text = $this->text; // this is what shows in the tab
+		if ($G_SESSION->usesPlugin("mailman")) {
+			$param = '?type=user&id=' . $G_SESSION->getId() . "&pluginname=" . $this->name; // we indicate the part we�re calling is the user one
+			echo ' | ' . $HTML->PrintSubMenu (array ($text),
+					array ('/plugins/mailman/index.php' . $param ));				
+		}
+	}
+			
+        function groupisactivecheckbox($params) {
+                global $use_mailmanplugin,$G_SESSION,$HTML,$gfcommon,$gfwww,$gfplugins;
+		//Check if the group is active
+		// this code creates the checkbox in the project edit public info page to activate/deactivate the plugin
+		$group_id=$params['group'];
+		$group = &group_get_object($group_id);
+		echo "<tr>";
+		echo "<td>";
+		echo ' <input type="CHECKBOX" name="use_forummlplugin" value="1" ';
+		// CHECKED OR UNCHECKED?
+		if ( $group->usesPlugin ( $this->name ) ) {
+			echo "CHECKED";
+		}
+		echo "><br/>";
+		echo "</td>";
+		echo "<td>";
+		echo "<strong>Use ".$this->text." Plugin</strong>";
+		echo "</td>";
+		echo "</tr>";
+	}
+
+        function groupisactivecheckboxpost($params) {
+		global $use_mailmanplugin,$G_SESSION,$HTML,$gfcommon,$gfwww,$gfplugins;
+		// this code actually activates/deactivates the plugin after the form was submitted in the project edit public info page
+		$group_id=$params['group'];
+		$group = &group_get_object($group_id);
+		$use_mailmanplugin = getStringFromRequest('use_forummlplugin');
+		if ( $use_mailmanplugin == 1 ) {
+			$group->setPluginUse ( $this->name );
+		} else {
+			$group->setPluginUse ( $this->name, false );
+		}
+	}
+
+	function search_engines($params) {
+		global $use_mailmanplugin,$G_SESSION,$HTML,$gfcommon,$gfwww,$gfplugins;
+		require_once('ForumMLSearchEngine.class.php');
+		// FIXME: when the hook is called, the group_id is not set.
+		// So I use the global variable instead.
+		$request =& HTTPRequest::instance();
+		$group_id = (int) $request->get('group_id');
+		if ($group_id) {
+			$group =& group_get_object($group_id);
+			if ($group->usesPlugin('forumml')) {
+				if (isset($params['object'])) {
+					$searchManager = $params['object'];
+				} else {
+					$searchManager = $params;
+				}
+				$searchManager->addSearchEngine(
+						SEARCH__TYPE_IS_LIST,
+						new ForumMLSearchEngine(SEARCH__TYPE_IS_LIST,
+							'ForumMLHtmlSearchRenderer',
+							_("This project's mailing lists"), $group_id)
+						);
+			}
+		}
 	}
 
 	function &getPluginInfo() {
