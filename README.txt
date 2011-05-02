@@ -13,7 +13,7 @@ depends on mailman configuration.
 
 ==== INSTALLATION ===
 
-bin/installFF.sh should do whatever is necessary for the plugin works
+bin/install.sh (Codendi) or bin/installFF.sh (Fusionforge) should do whatever is necessary for the plugin works
 * creation of directory with good rights
 * installation of pear packages
 * config mailman
@@ -31,7 +31,7 @@ run 'ml_arch_2_DB.pl' script:
 $> /usr/share/codendi/plugins/forumml/bin/ml_arch_2_DB.pl
 
 
-==== Importing existing list archives in iFusionForge ====
+==== Importing existing list archives in FusionForge ====
 
 ## To import ML archives of specific projects, into ForumML DB, 
 run 'mail_2_DBFF.php' script.
