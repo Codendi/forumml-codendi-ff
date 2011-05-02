@@ -40,7 +40,6 @@ class ForumMLPlugin extends Plugin {
 		$this->_addHook('layout_searchbox_options', 'forumml_searchbox_option', false);
 		$this->_addHook('layout_searchbox_hiddenInputs', 'forumml_searchbox_hiddenInput', false);
 		$this->_addHook('plugins_powered_search', 'forumml_search', false);
-		$this->_addHook('cssfile');
 		$this->_addHook('search_engines');
 		$this->_addHook('full_search_engines');
 		// Set ForumML plugin scope to 'Projects' wide 
