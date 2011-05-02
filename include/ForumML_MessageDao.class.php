@@ -211,10 +211,9 @@ class ForumML_MessageDao extends DataAccessObject {
 	function insertHeader($header) {
 
 		$header = $this->da->quoteSmart($header);
-		$sql = 'INSERT INTO plugin_forumml_header'.
-			' (name)'.
-			' VALUES  ($1)';
-		return db_insertid($this->update($sql,array($header)),'plugin_forumml_header','id_header');
+		$sql = "INSERT INTO plugin_forumml_header(name)
+                        VALUES  ($header)";
+		return $this->updateAndGetLastId($sql, 'plugin_forumml_header', 'id_header'); //The two remaining params are for fusionforge/pgsql
 	}
 
 	function getParentMessageFromHeader ($id_header) {
@@ -243,17 +242,15 @@ class ForumML_MessageDao extends DataAccessObject {
 	}
 
 	function insertMessage ($id_list,$id_parent, $body, $messageDate, $ctype) {
-		$id_list = $this->da->quoteSmart($id_list);
-		$id_parent = $this->da->quoteSmart($id_parent);
-		$body = $this->da->quoteSmart($body);
+		$id_list     = $this->da->quoteSmart($id_list);
+		$id_parent   = $this->da->quoteSmart($id_parent);
+		$body        = $this->da->quoteSmart($body);
 		$messageDate = $this->da->quoteSmart($messageDate);
-		$ctype = $this->da->quoteSmart($ctype);
+		$ctype       = $this->da->quoteSmart($ctype);
 
-		$sql = 'INSERT INTO plugin_forumml_message'.
-			' ( id_list, id_parent, body, last_thread_update, msg_type)'.
-			' VALUES ($1, $2, $3, $4, $5)';
-		return db_insertid($this->update($sql,array($id_list , $id_parent , $body , $messageDate , $ctype)),'plugin_forumml_message' ,'id_message');
-
+		$sql = "INSERT INTO plugin_forumml_message(id_list, id_parent, body, last_thread_update, msg_type)
+			VALUES ($id_list, $id_parent, $body, $messageDate, $ctype)";
+		return $this->updateAndGetLastId($sql, 'plugin_forumml_message', 'id_message'); //The two remaining params are for fusionforge/pgsql
 	}
 
 }
