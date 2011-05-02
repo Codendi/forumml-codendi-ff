@@ -66,7 +66,6 @@ if ($p && $plugin_manager->isPluginAvailable($p) && $p->isAllowed()) {
 	    $attch = $fmlAttch->getById($attchmentId);
 echo $attch['file_path'];
 	    if ( file_exists($attch['file_path'])) {
-//if (1==1) {
 		    header('Content-disposition: filename="'.$attch['file_name'].'"');
 		    header("Content-Type: ".$attch['type']);
 		    header("Content-Transfer-Encoding: ".$attch['type']);
