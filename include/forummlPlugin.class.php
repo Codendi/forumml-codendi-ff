@@ -83,7 +83,7 @@ class ForumMLPlugin extends Plugin {
 		case "layout_searchbox_hiddenInputs":
 			$this->forumml_searchbox_hiddenInput($params);
 			break;
-		case "plugins_powered_search"!
+		case "plugins_powered_search":
 			$this->forumml_search($params);
 			break;
 		}											
