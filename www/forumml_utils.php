@@ -32,7 +32,6 @@ define('FORUMML_CC', 34);
 
 require_once(dirname(__FILE__).'/../include/ForumML_Attachment.class.php');
 require_once(dirname(__FILE__).'/../include/ForumML_MessageDao.class.php');
-//require_once('common/include/Toggler.class.php');
 require_once('Mail/RFC822.php');
 require_once('common/mail/Mail.class.php');
 require_once('PEAR.php');
