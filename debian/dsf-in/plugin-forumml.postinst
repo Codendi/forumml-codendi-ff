@@ -28,7 +28,7 @@ case "$1" in
 	# Prepare database
 	/usr/share/@OLDPACKAGE@/bin/register-plugin forumml "ForumML"
 	/usr/share/@OLDPACKAGE@/plugins/forumml/bin/db-upgrade.pl
-	/usr/share/@OLDPACKAGE@/plugins/forumml/bin/install.sh
+	/usr/share/@OLDPACKAGE@/plugins/forumml/bin/installFF.sh
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
