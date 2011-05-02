@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+
+if [ "X${CAT}" == "X" ];then
+CAT=/bin/cat
+fi
+
+if [ "X${INSTALL}" == "X" ];then
+INSTALL=/usr/bin/install
+fi
+
+if [ "X${SERVICE}" == "X" ];then
+SERVICE=/sbin/service
+fi
+
 if [ "X${PEAR}" == "X" ];then
 PEAR=/usr/bin/pear
 fi
@@ -36,7 +49,7 @@ $INSTALL -g $GROUP_WWW -o $USER_WWW -m 06755 /usr/share/codendi/plugins/forumml/
 ## Install some pear packages
 # What if no internet access?
 cd $SCRIPT_DIR/../PEAR
-$PEAR upgrade --force --offline Archive_Tar-1.3.3.tgz Console_Getopt-1.2.3.tgz XML_Util-1.2.1.tgz Structures_Graph-1.0.2.tgz
+$PEAR upgrade --force --offline PEAR-1.9.0.tgz Archive_Tar-1.3.3.tgz Console_Getopt-1.2.3.tgz XML_Util-1.2.1.tgz Structures_Graph-1.0.2.tgz 
 $PEAR upgrade --force --offline Mail-1.1.14.tgz Mail_Mbox-0.6.1.tgz Mail_mimeDecode-1.5.0.tgz Mail_Mime-1.5.2.tgz
 
 ## Update Mailman config to enable the Hook
