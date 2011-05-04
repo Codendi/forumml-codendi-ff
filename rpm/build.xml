@@ -1,0 +1,22 @@
+<project name="forumml" basedir="." default="main">
+    <description>Build forumml rpm codendi</description>
+    <target name="main">
+        <delete file="SOURCES/codendi-plugin-forumml.tgz" />
+        <tar 
+		destfile="SOURCES/codendi-plugin-forumml.tgz"
+		compression="gzip">
+		<tarfileset 
+			dir="../"
+			prefix="codendi-plugin-forumml">
+			<exclude name=".git/**" />
+			<exclude name="rpm/SOURCES/**" />
+			<exclude name="rpm/BUILD/**" />
+		</tarfileset>
+	</tar>
+	<rpm 
+		specFile="codendi-plugin-forumml.spec"
+		topDir="."
+		cleanBuildDir="false"
+		failOnError="true" />
+    </target>
+</project>
