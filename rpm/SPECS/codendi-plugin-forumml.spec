@@ -12,6 +12,7 @@ Source: %{name}.tgz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
+Requires: codendi-plugin-mailman
 
 %description
 ForumML plugin for Codendi
