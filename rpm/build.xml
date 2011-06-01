@@ -19,4 +19,12 @@
 		cleanBuildDir="false"
 		failOnError="true" />
     </target>
+    <target name="clean">
+	<delete>
+		<fileset dir="SOURCES" excludes=".gitignore" />
+		<fileset dir="RPMS" excludes=".gitignore" />
+		<fileset dir="SRPMS" excludes=".gitignore" />
+		<fileset dir="BUILD" excludes=".gitignore" />
+	</delete>
+    </target>
 </project>
