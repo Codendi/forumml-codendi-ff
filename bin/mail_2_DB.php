@@ -47,7 +47,7 @@ require_once('utils.php');
 
 $list = $argv[1];
 // get list id and group id from list name
-$sql = "SELECT group_id, group_list_id FROM mail_group_list WHERE list_name=$1";
+$sql = "SELECT group_id, group_list_id FROM mail_group_list WHERE list_name='$1'";
 $res = db_query_params($sql,array(db_escape_string($list)));
 if (db_numrows($res) > 0) {
 	$id_list = db_result($res,0,'group_list_id');
