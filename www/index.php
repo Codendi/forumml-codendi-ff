@@ -58,7 +58,7 @@ $list = new MailmanList($group_id,$list_id);
 		if (!isLogged() || ($list->isPublic()!=1 && !$current_user->isMember($group_id))) {
 			exit_error(_('error'),_('You are not allowed to access this page'));
 		}		
-		if ($list->getStatus() !=3) {
+		if ($list->getStatus() != 1) {
 			exit_error(_('Error'),_('The mailing  list does not exist or is inactive'));
 		}
 	}
